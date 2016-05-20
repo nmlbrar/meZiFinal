@@ -20,4 +20,11 @@ function get_comments(){
     echo json_encode($result->fetchAll());
 }
 
+function del_comments(){
+    global $db;
+    $query = "DELETE FROM comments WHERE id ='".$_POST['post_id']."'";
+    $result = $db->query($query);
+    echo json_encode($result->fetchAll());
+}
+
 ?>

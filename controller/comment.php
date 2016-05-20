@@ -9,4 +9,8 @@ if($_POST['method'] == "getComments"){
     get_comments();
 }
 
+if($_POST['method'] == "delComment"){
+    del_comments();
+}
+
 ?>
