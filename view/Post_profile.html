@@ -161,7 +161,7 @@
                                 id: (window.location.search).replace('?','')
                                 },
                             success:function(response){
-                                loadCom();
+                                
                                 console.log(response);
                                 comStor = response[0].id;
                                 console.log(comStor);
@@ -220,22 +220,34 @@
                                         active=false;
                                     }
                                 };   
+                                console.log(comStor);
+                                
+                              
+                                    $.ajax({
+                                        url:"../controller/comment.php",
+                                        type:"post",
+                                        dataType:"json",
+                                        data: {
+                                            method:"getComments",
+                                            post_id:comStor
+                                        },
+                                        success:function(ans){
+                                            console.log(ans);
+                                            var showComm = document.createElement("div");
+                                            showComm.id = "showCom";
+                                            for(i = 0; i <ans.length; i++){
+                                                var comSpan = document.createElement("p");
+                                                comSpan.id = "spanId";
+                                                comSpan.innerHTML = "<span id='comStyl'>Comment:</span> "+ans[i].comment+"<br>"+"<span id='comStyl'>Posted By:</span>"+" "+ans[i].username+"<br>";
+                                                showComm.appendChild(comSpan);
+                                            }
+                                            postDiv.appendChild(showComm);
+                                        } 
+                                    });
+                               
                             }
-                        });         
-            var loadCom  = function(){
-                $.ajax({
-                    url:"../controller/comment.php",
-                    type:"post",
-                    dataType:"json",
-                    data: {
-                        method:"getComments",
-                        post_id:comStor
-                    },
-                    success:function(ans){
-                        console.log(ans);
-                    } 
-                });
-            }
+                        });  
+                      
                     },
                 });
             }

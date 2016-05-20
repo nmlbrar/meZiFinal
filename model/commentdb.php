@@ -14,7 +14,8 @@ function post_comment(){
 
 function get_comments(){
     global $db;
-    $query = "SELECT * FROM comments  WHERE post_id ='".$_POST['post_id']."'";
+    $query = "SELECT *,users.username FROM comments 
+     LEFT JOIN users ON users.id = comments.user_id WHERE post_id ='".$_POST['post_id']."'";
     $result = $db->query($query);
     echo json_encode($result->fetchAll());
 }
