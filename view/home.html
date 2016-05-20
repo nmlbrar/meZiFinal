@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Post</title>
+        <link rel="stylesheet" type="text/css" href="css/my.css">
+    </head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <body  class="body">
+       <button id="homeButt">Home</button>
+        <div class="headingDiv">
+            <span id="heading">Welcome to Dove, following are the postings posted by the users:</span>     
+        </div>
+        <button id="profileBut">My profile</button>
+        <div id="content">
+            
+        </div>
+    </body>
+    
+    <script>
+        $(document).ready(function(){
+            document.getElementById("homeButt").onclick = function(){
+                location.href = "./home.html";
+            };
+            
+            document.getElementById("profileBut").onclick = function(){
+                location.href = "./profile.html";
+            };
+            
+            document.getElementById("content").innerHTML = "";
+            $.ajax({
+                url:"../controller/posting.php",
+                dataType:"json",
+                type:"POST",
+                data:{
+                    method:"getallorders",
+                },
+
+                success:function(resp){
+                    console.log(resp);
+                    for(var i=0; i<resp.length; i++){
+                    var display = document.createElement("div");
+                        
+                        var table=document.createElement("table");
+                        table.style.width = '50%';
+                        table.setAttribute('border', '0');
+                            var hr = document.createElement("hr");
+                            display.appendChild(hr);
+                            var tr  = document.createElement("tr");
+                            display.dataset.id = resp[i].id;
+                            var td = document.createElement("td");
+                            var td1 = document.createElement("td");
+                            var td2 = document.createElement("td");
+                            var td3 = document.createElement("td");
+                            td.innerHTML = resp[i].description;
+                            td1.innerHTML =resp[i].destination;
+                            td2.innerHTML =resp[i].currentPlace;
+                            td3.innerHTML =resp[i].username;
+                            tr.appendChild(td);
+                            tr.appendChild(td1);
+                            tr.appendChild(td2);
+                            tr.appendChild(td3);
+                            table.appendChild(tr);
+                            display.appendChild(table);
+                            var hr = document.createElement("hr");
+                            display.appendChild(hr);
+                        document.getElementById("content").appendChild(display);
+                        
+                        $(display).click(function(){
+                            console.log(this.dataset.id);
+                            window.location = ("./Post_profile.html?"+this.dataset.id+"");
+
+                        });
+
+                    }
+
+                }
+                
+            });
+      
+        });
+       
+    </script>
+</html>

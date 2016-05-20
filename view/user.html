@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login</title>
+    </head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    
+    <body>
+        <input id="username" type="text" placeholder="username"/>
+        <input id="password" type="text" placeholder="password"/>
+        <button id="login">Login</button>
+        <br>
+        <!--<input id="description" type="text" placeholder="product description"/>
+        <input id="destination" type="text" placeholder="destination"/>
+        <input id="currentPlace" type="text" placeholder="currentPlace"/>
+        <button id="post">Post</button>
+        <button id="get">Get</button>
+        <div id="update"></div><button id="update_but">update value</button>-->
+    </body>
+    
+    <script>
+        $(document).ready(function(){
+            var user_id = -1;
+            //click function for the submit button
+            document.getElementById("login").onclick = function(){
+                
+                //sending login info to the user.php
+                $.ajax({
+                    url:"../controller/user.php",
+                    type:"post",
+                    dataType:"json",
+                    data: {
+                        method:"login",
+                        username: document.getElementById("username").value,
+                        password: document.getElementById("password").value,
+                        
+                    },
+                    success:function(resp){
+                        console.log(resp);
+                        user_id = resp[0].id;
+                        
+                        
+                        //input boxes for the postings
+                        var description = document.createElement("input");
+                        description.placeholder = "product description";
+                        description.id = "description";
+                        document.body.appendChild(description);
+                        
+                        var destination = document.createElement("input");
+                        destination.placeholder = "destination";
+                        destination.id = "destination";
+                        document.body.appendChild(destination);
+                        
+                        var currentPlace = document.createElement("input");
+                        currentPlace.placeholder = "Current Place";
+                        currentPlace.id = "currentPlace";
+                        document.body.appendChild(currentPlace);
+                        
+                        //buttons to get, update,delete and post the posting
+                        var postBtn = document.createElement("button");
+                        postBtn.innerHTML = "POST";
+                        postBtn.id = "post";
+                        document.body.appendChild(postBtn);
+                        
+                        var getBtn = document.createElement("button");
+                        getBtn.innerHTML = "GET POSTS";
+                        getBtn.id = "get";
+                        document.body.appendChild(getBtn);
+  
+                        var updateDiv = document.createElement("div");
+                        updateDiv.id = "update";
+                        var updateBut = document.createElement("button");
+                        updateBut.innerHTML = "UPDATE POST";
+                        updateBut.id = "update_but";
+                        document.body.appendChild(updateBut);
+                        document.body.appendChild(updateDiv);
+                        
+                        
+                        
+                        //ajax call to get the posts form the database
+                        
+                        //ajax call to post a post
+                        document.getElementById("post").onclick = function(){
+                            $.ajax({
+                                url:"../controller/posting.php",
+                                type:"post",
+                                dataType:"html",
+                                data: {
+                                    method:"postall",
+                                    description: document.getElementById("description").value,
+                                    destination: document.getElementById("destination").value,
+                                    currentPlace: document.getElementById("currentPlace").value,
+                                    user_id: user_id
+                                },
+                                success:function(resp){
+                                    alert("INSERT");
+                                    console.log(resp);
+                                }
+                            });
+                
+                        }
+                        
+                        document.getElementById("get").onclick = function(){
+                            $.ajax({
+                                url:"../controller/posting.php",
+                                dataType:"json",
+                                type:"POST",
+                                data:{
+                                    method:"getall",
+                                    user_id:user_id
+                                },
+
+                                success:function(resp){
+                                    alert("Get!");
+                                    console.log(resp);
+                                    for(var i=0; i<resp.length; i++){
+                                        var h3=document.createElement("h3");
+                                        h3.innerHTML =resp[i].description+" | "+resp[i].destination+" | "+resp[i].currentPlace;
+                                        document.body.appendChild(h3);
+                                        h3.dataset.id = resp[i].id;
+                                        console.log(resp[i]);
+                                        h3.onclick = function(){
+
+                                            var inputh3 = document.createElement("input");
+                                            inputh3.id = "inputh3";
+                                            inputh3.value = this.innerHTML;
+                                            document.getElementById("update").innerHTML = "";
+                                            document.getElementById("update").appendChild(inputh3);
+                                            console.log(this.dataset);
+                                            document.getElementById("update_but").dataset.h3id = this.dataset.id;
+
+                                        }
+                                    }
+                                }
+                            });
+                
+                        }
+                        
+                        document.getElementById("update_but").onclick = function(){
+                        console.log(this.dataset);
+                        var h3_id =  this.dataset.h3id;
+                            $.ajax({
+                                url:"../controller/posting.php",
+                                type:"POST",
+                                dataType:"json",
+                                data:{
+                                    method:"update",
+                                    id:h3_id,
+                                    description:document.getElementById("inputh3").value,
+                                },
+                                success:function(resp){
+                                    alert("updated");
+                                }
+                            });
+                
+                
+                        }
+                    }
+                });
+            }       
+            
+        });
+    </script>
+</html>

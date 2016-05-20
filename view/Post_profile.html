@@ -1,0 +1,245 @@
+<html>
+    <head>
+        <title>Profile</title>
+        <!--linking CSS-->
+        <link rel="stylesheet" type="text/css" href="css/my.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    </head>
+    <body class="body">
+        
+        
+        <script>
+            $(document).ready(function(){
+                console.log((window.location.search).replace('?',''));
+                var update = false;
+                var user_id = -1;
+                var comStor;
+                
+                $.ajax({
+                        url:"../controller/user.php",
+                        type:"post",
+                        dataType:"json",
+                        data: {
+                            method:"checkLogin",
+                             
+                        },
+                        success:function(resp){
+                            console.log(resp);
+                           // console.log((resp == null));
+                            if(resp > 0){
+                                loggedIn();
+                                
+                            }
+                            if(resp == "null"){
+                               var newDiv = document.createElement("div"); 
+                               newDiv.innerHTML = '<div class="userLogin"><div class="userLogin1"><div class="logo"><img class="doveImg" src="img/dove.png" alt="dove"/></div><input id="username" type="text" placeholder="username" autofocus/><input id="password" type="text" placeholder="password"/><br><br><button id="login">Login</button></div></div>'; document.body.appendChild(newDiv);
+                                
+                                
+                                 document.getElementById("login").onclick = function(){
+                
+                    //sending login info to the user.php
+                    $.ajax({
+                        url:"../controller/user.php",
+                        type:"post",
+                        dataType:"json",
+                        data: {
+                            method:"login",
+                            username: document.getElementById("username").value,
+                            password: document.getElementById("password").value, 
+                        },
+                        success:function(resp){
+                        console.log(resp);
+                            
+                         $(".userLogin").remove();
+                        loggedIn();
+                        }
+                    });
+                }
+                            }
+                        },error:function(resp){
+                            console.log(resp);
+                               var newDiv = document.createElement("div"); 
+                               newDiv.innerHTML = '<div class="userLogin"><div class="userLogin1"><div class="logo"><img class="doveImg" src="img/dove.png" alt="dove"/></div><input id="username" type="text" placeholder="username" autofocus/><input id="password" type="text" placeholder="password"/><br><br><button id="login">Login</button></div></div>'; document.body.appendChild(newDiv);
+                                
+                                
+                                 document.getElementById("login").onclick = function(){
+                
+                    //sending login info to the user.php
+                    $.ajax({
+                        url:"../controller/user.php",
+                        type:"post",
+                        dataType:"json",
+                        data: {
+                            method:"login",
+                            username: document.getElementById("username").value,
+                            password: document.getElementById("password").value, 
+                        },
+                        success:function(resp){
+                        console.log(resp);
+                            
+                         $(".userLogin").remove();
+                        loggedIn();
+                        }
+                    });
+                }
+                            
+                        }
+                });
+                
+            
+                //click function for the submit button
+               
+                var loggedIn = function(){
+                $.ajax({
+                    url:"../controller/user.php",
+                    type:"post",
+                    dataType:"json",
+                    data: {
+                        method:"getUser",
+                    },
+                    success:function(resp){
+                        // creating div for body and content
+                        var leftDiv = document.createElement("div");
+                        leftDiv.className = "leftDiv";
+                        document.body.appendChild(leftDiv);
+
+                        // div for the content in left div
+                        var leftCon = document.createElement("div");
+                        leftCon.className = "leftCon";
+                        document.body.appendChild(leftCon);
+
+                        // right div
+                        var rightDiv = document.createElement("div");
+                        rightDiv.className = "rightDiv";
+                        document.body.appendChild(rightDiv);
+
+                        // div for the content in right div
+                        var rightCon = document.createElement("div");
+                        rightCon.className = "rightCon";
+                        document.body.appendChild(rightCon);
+
+
+                        //content for the leftCon div
+
+
+                        var profInfo = document.createElement("div");
+                        profInfo.className = "profInfo";
+                        var profName = document.createElement("span");
+                        profName.id = "profName";
+                        profName.innerHTML = "<span class='name'>User</span>"+": "+resp[0].username+"<hr>";
+                        profInfo.appendChild(profName);
+                        leftCon.appendChild(profInfo);
+
+                        var logoutBut = document.createElement("button");
+                        logoutBut.id = "logoutBut";
+                        logoutBut.innerHTML = "LOGOUT";
+                        leftCon.appendChild(logoutBut);
+
+
+
+                        //content for the right div  which are the postings
+                        //div for posting a new post
+
+
+                        //div that displays the postings
+                        var postDiv = document.createElement("div");
+                        postDiv.id = "postDiv";
+                        rightCon.appendChild(postDiv);
+
+                        var postLength = 0;
+
+                        document.getElementById("logoutBut").onclick = function(){
+                             location.href = "../controller/logout.php";
+                        }
+                        console.log((window.location.search).replace('?',''));
+                        $.ajax({
+                            url:"../controller/posting.php",
+                            dataType:"json",
+                            type:"POST",
+                            data:{
+                                method:"getallbyID",
+                                id: (window.location.search).replace('?','')
+                                },
+                            success:function(response){
+                                loadCom();
+                                console.log(response);
+                                comStor = response[0].id;
+                                console.log(comStor);
+                                var bckDiv = document.createElement("div");
+                                var divL = document.createElement("div");
+                                bckDiv.className = "bckDiv";
+                                bckDiv.innerHTML =  "<button id='bckH'>Back to Postings</button>";
+                                divL.className = "divLClass";
+                                divL.innerHTML ="<span class = 'productSpan'>Description : </span>"+response[0].description+ "<br><span class = 'productSpan'>Current place : </span>"+response[0].currentPlace+"<br><span class = 'productSpan'>Destination : </span>"+response[0].destination+"<br><span class = 'productSpan'>User : </span>"+response[0].username+"<br><span class = 'productSpan'>Email : </span>"+response[0].email;
+                                var comBut = document.createElement("button");
+                                comBut.id = "comBut";
+                                comBut.innerHTML = "Leave a comment";
+                                postDiv.appendChild(bckDiv);
+                                postDiv.appendChild(divL);
+                                postDiv.appendChild(comBut);
+                                document.getElementById("bckH").onclick = function(){
+                                    window.location.href = "./home.html";
+                                }
+                                var active = false;
+                                document.getElementById("comBut").onclick = function(){
+
+                                    if(active==false){
+                                        console.log("false");
+                                        comBut.innerHTML = "done";
+                                        var comInp = document.createElement("input");
+                                        comInp.id = "compInp";
+                                        comInp.placeholder = "comment";
+                                        postDiv.appendChild(comInp);
+
+                                        comInp.onclick = function(){
+                                            comInp.placeholder = "";
+                                        }
+                                        active = true;
+                                    }else if(active==true){
+
+                                        console.log("true");
+                                        console.log(response);
+                                        comBut.innerHTML = "Leave a comment";
+
+                                        //ajax call
+                                        $.ajax({
+                                            url:"../controller/comment.php",
+                                            type:"post",
+                                            dataType:"html",
+                                            data: {
+                                                method:"postCom",
+                                                comment: document.getElementById("compInp").value,
+                                                post_id:response[0].id,
+                                                user_id: resp[0].id
+                                            },
+                                            success:function(respCom){
+                                                alert("INSERT");
+                                                
+                                            }
+                                        });
+                                        active=false;
+                                    }
+                                };   
+                            }
+                        });         
+            var loadCom  = function(){
+                $.ajax({
+                    url:"../controller/comment.php",
+                    type:"post",
+                    dataType:"json",
+                    data: {
+                        method:"getComments",
+                        post_id:comStor
+                    },
+                    success:function(ans){
+                        console.log(ans);
+                    } 
+                });
+            }
+                    },
+                });
+            }
+        });
+      </script>
+   </body>
+</html>

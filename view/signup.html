@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Signup</title>
+    </head>
+    <link rel="stylesheet" type="text/css" href="css/my.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    
+     <body class="body">
+        <div class="userLogin">
+            <div class="userLogin1">
+                <div class="logo">
+                <img class="doveImg" src="img/dove.png" alt="dove"/>
+                </div>
+                
+                    <input id="username" type="text" placeholder="username" autofocus/>
+                    <input id="password" type="text" placeholder="password"/><br>
+                    <input id="emailStyle" type="email" placeholder="email"/><br><br>
+                    <button id="sub">Register</button>
+                
+                <div class="placeholder"></div>
+                <a id="loginpage" href="./profile.html">Have an account?Login</a>
+        
+            </div>
+        </div>
+
+    
+    <script>
+        $(document).ready(function(){
+            //click function for the submit button
+            document.getElementById("sub").onclick = function(){
+                
+                //sending login info to the user.php
+                $.ajax({
+                    url:"../controller/user.php",
+                    type:"post",
+                    dataType:"html",
+                    data: {
+                        method:"insert",
+                        username:document.getElementById("username").value,
+                        password:document.getElementById("password").value,
+                        email:document.getElementById("emailStyle").value,
+                        user_type:1
+                    },
+                    success:function(resp){
+                        console.log("inserted successfully");
+                    }
+                });
+            }
+        });
+    </script>
+</html>
